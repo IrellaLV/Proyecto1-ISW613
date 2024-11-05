@@ -1,0 +1,57 @@
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    apellidos VARCHAR(255) NOT NULL,
+    telefono VARCHAR(15),
+    correo VARCHAR(255) UNIQUE NOT NULL,
+    direccion VARCHAR(255),
+    pais VARCHAR(100),
+    contrasena VARCHAR(255) NOT NULL,
+    rol ENUM('Administrador', 'Amigo') NOT NULL
+);
+
+CREATE TABLE especies (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_comercial VARCHAR(255) NOT NULL,
+    nombre_cientifico VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE arboles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    especie_id INT,
+    ubicacion_geografica VARCHAR(255),
+    estado ENUM('Disponible', 'Vendido') DEFAULT 'Disponible',
+    precio INT,
+    foto VARCHAR(255),
+    FOREIGN KEY (especie_id) REFERENCES especies(id)
+);
+
+CREATE TABLE actualizaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    arbol_id INT,
+    fecha DATE NOT NULL,
+    tamano VARCHAR(50),
+    estado ENUM('Disponible', 'Vendido') DEFAULT 'Disponible',
+    FOREIGN KEY (arbol_id) REFERENCES arboles(id)
+);
+
+CREATE TABLE compras (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    amigo_id INT,
+    arbol_id INT,
+    fecha_compra DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (amigo_id) REFERENCES usuarios(id),
+    FOREIGN KEY (arbol_id) REFERENCES arboles(id)
+);
+
+SELECT CONSTRAINT_NAME 
+FROM information_schema.KEY_COLUMN_USAGE 
+WHERE TABLE_NAME = 'arboles' AND COLUMN_NAME = 'amigo_id';
+
+ALTER TABLE arboles
+DROP FOREIGN KEY nombre_de_la_restriccion;
+
+ALTER TABLE arboles
+DROP COLUMN amigo_id;
+
+
